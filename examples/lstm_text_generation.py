@@ -34,10 +34,7 @@ def get_file_path(file_name):
                 line = line.strip()
                 if len(line) == 0:
                     continue
-                tmp = []
-                for word in line:
-                    tmp.append(word)
-                print(' '.join(tmp), end='\n', file=outf)
+                print(line, end='\n', file=outf)
     return data_path
 #path = get_file('nietzsche.txt', origin='https://s3.amazonaws.com/text-datasets/nietzsche.txt')
 path = get_file_path('gcd.txt')
