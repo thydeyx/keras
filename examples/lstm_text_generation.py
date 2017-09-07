@@ -93,6 +93,7 @@ def sample(preds, temperature=1.0):
     return np.argmax(probas)
 
 # train the model, output generated text after each iteration
+logFIle = open('log.log', 'w')
 for iteration in range(1, 60):
     print()
     print('-' * 50)
@@ -105,13 +106,14 @@ for iteration in range(1, 60):
 
     for diversity in [0.2, 0.5, 1.0, 1.2]:
         print()
-        print('----- diversity:', diversity)
+        print('----- diversity:', diversity, end='\n', file=logFIle)
 
         generated = ''
         sentence = text[start_index: start_index + maxlen]
         generated += sentence
-        print('----- Generating with seed: "' + sentence + '"')
-        sys.stdout.write(generated)
+        print('----- Generating with seed: "' + sentence + '"', end='\n', file=logFIle)
+        print(generated, end='', file=logFIle)
+        #sys.stdout.write(generated)
 
         for i in range(400):
             x = np.zeros((1, maxlen, len(chars)))
@@ -125,6 +127,8 @@ for iteration in range(1, 60):
             generated += next_char
             sentence = sentence[1:] + next_char
 
-            sys.stdout.write(next_char)
-            sys.stdout.flush()
-        print()
+            #sys.stdout.write(next_char)
+            #sys.stdout.flush()
+            print(next_chars, end='', file=logFIle)
+            print('\n', end='', file=logFIle)
+logFIle.close()
