@@ -22,7 +22,7 @@ import sys
 import os
 
 def get_file_path(file_name):
-    base_path = os.path.join(os.path.expanduser('~'), '.keras/datasets')
+    base_path = '/Users/thy/.keras/datasets'
     dataset_path = os.path.join(base_path, file_name)
     if os.path.exists(dataset_path) == False:
         print(dataset_path + ' is not existing.')
@@ -65,21 +65,21 @@ print('nb sequences:', len(sentences))
 
 print('Vectorization...')
 X = np.zeros((len(sentences), maxlen, len(chars)), dtype=np.bool)
-y = np.zeros((len(sentences), len(chars)), dtype=np.bool)
+y = np.zeros((len(sentences), maxlen, len(chars)), dtype=np.bool)
 for i, sentence in enumerate(sentences):
     for t, char in enumerate(sentence):
-        X[i, t, char_indices[char]] = 1
-    y[i, char_indices[next_chars[i]]] = 1
+        if t < maxlen - 1:
+            X[i, t, char_indices[char]] = 1
+        else:
+            X[i, t, char_indices[char]] = 1
+            y[i, t+1, char_indices[next_chars[i]]] = 1
 
 
 # build the model: a single LSTM
 print('Build model...')
 model = Sequential()
-model.add(LSTM(128, return_sequences=True, input_shape=(maxlen, len(chars))))
-model.add(LSTM(128, return_sequences=True))
-model.add(LSTM(128, return_sequences=True))
-model.add(LSTM(128))
-model.add(Dense(len(chars)))
+model.add(LSTM(128, input_shape=(maxlen, len(chars))))
+model.add(Dense(maxlen, len(chars)))
 model.add(Activation('softmax'))
 
 optimizer = RMSprop(lr=0.01)
