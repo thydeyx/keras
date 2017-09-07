@@ -19,8 +19,29 @@ from keras.utils.data_utils import get_file
 import numpy as np
 import random
 import sys
+import os
 
-path = get_file('nietzsche.txt', origin='https://s3.amazonaws.com/text-datasets/nietzsche.txt')
+def get_file_path(file_name):
+    base_path = '/Users/thy/.keras/datasets'
+    dataset_path = os.path.join(base_path, file_name)
+    if os.path.exists(dataset_path) == False:
+        print(dataset_path + ' is not existing.')
+        sys.exit(0)
+    data_path = dataset_path + '.input'
+    with open(dataset_path, 'r') as inf:
+        with open(data_path, 'w') as outf:
+            for line in inf:
+                line = line.strip()
+                if len(line) == 0:
+                    continue
+                tmp = []
+                for word in line:
+                    tmp.append(word)
+                print(' '.join(tmp), end='\n', file=outf)
+    return data_path
+#path = get_file('nietzsche.txt', origin='https://s3.amazonaws.com/text-datasets/nietzsche.txt')
+path = get_file_path('gcd.txt')
+print(path)
 text = open(path).read().lower()
 print('corpus length:', len(text))
 
